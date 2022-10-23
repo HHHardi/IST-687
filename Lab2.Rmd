@@ -1,0 +1,268 @@
+---
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+# Intro to Data Science - Lab 2
+##### Copyright 2022, Jeffrey Stanton and Jeffrey Saltz   Please do not post online.
+
+## Week 2 - Sorting Data and Ordering a Data Frame
+
+```{r}
+# Enter your name here: Hongdi Li
+```
+
+### Please include nice comments. <br>
+### Instructions: 
+In your group, introduce yourselves to each other again and then solve each of the problems below: I may ask you the names of the people in your group!<br>
+All students in the group should be prepared to report the whole class at the
+conclusion of the breakout group. All students should run the necessary code on
+their own instances of R-Studio.
+
+### Attribution statement: (choose only one and delete the rest)
+
+```{r}
+# 1. I did this lab assignment by myself, with help from the book and the professor.
+
+```
+
+1. Make	a	copy	of	the	built-in	iris	data	set	like	this:<br>
+`myIris	<-	iris`
+
+```{r}
+myIris	<-	iris
+```
+
+2. Get	an	explanation	of	the	contents	of	the	data	set	with	the	**help()**	function:<br>
+`help("iris")`
+
+```{r}
+help(iris)
+```
+
+3. Explore	**myIris**	via the	**str()**	and	**glimpse()**	functions	(note:	you	need	to	install	and
+library	** tidyverse **	to	use	**glimpse()**).	Which	do	you	think	is	better?	Why? Explain in a comment.
+
+```{r}
+#install.packages('tidyverse')
+library(tidyverse)
+str(myIris)
+glimpse(myIris)
+
+#I think glimpse() is way mych better because it can format the data
+#glimpse() let the data value in double type thus more accurate
+```
+
+4. Summarize	the	variables	in	your	copy	of	the	data	set,	like	this:<br>
+`summary(myIris)`
+
+```{r}
+summary(myIris)
+```
+
+5. The	**summary()**	command	provided	the	mean	of	each	numeric	variable.	Choose
+the	variable	with	the	highest	mean and	list	its	contents.	Any
+variable	can	be	echoed	to	the	console	simply	by	typing	its	name.	Here s	an
+example	that	echoes	the	variable	with	the	lowest	mean:<br>
+`myIris$Petal.Width`
+
+```{r}
+
+high_mean<-myIris$Sepal.Length 
+high_mean
+```
+
+6. Now	sort	that attribute by	calling	the	**sort()**	function	and	supplying	that	variable.
+Remember	to	choose	the	variable	with	the	highest	mean.
+
+```{r}
+sort_high<-sort(high_mean)
+sort_high
+```
+
+7. Now	repeat	the	previous	command,	but	this	time	use	the	**order()**	function,	again
+using the	variable	with	the	highest	mean.
+
+```{r}
+
+order(high_mean)
+
+```
+
+8. Write	a	comment	in	your	R	code	explaining	the	difference	between	**sort()**	and
+**order()**.	Be	prepared	to	explain	this	difference	to	the	class.
+
+```{r}
+#sort() basic shows the output data value as the increasing order,
+#but order() shows the position of the each data value, it wont tell user what's the data set's value
+# For example:
+#input: e<- c(0.1 0.3 0.2)
+#order(e) shows 1 3 2, which 1 means 0.1, 3 means 0.2 ... 
+#sort(e) shows 0.1 0.2 0.3
+```
+
+9. Now	use	the	**order()**	command	to	reorder	the	whole	data	frame, and	store	the	new
+dataframe	in	a	variable	called	** sortedDF **:
+
+```{r}
+sortedDF<-order(myIris)
+
+```
+
+10. Now	sort	the	dataframe	using	**arrange()**,	which	is	part	of	the	**tidyverse**	package.
+This	time,	sort	based	the attribute	with	the	lowest mean.	Store	the	new
+dataframe	in	a	variable	called	** sortedDF1 **
+
+```{r}
+sortedDF1<-arrange(myIris,Petal.Width)
+
+
+```
+
+11. Finally,	use	**head()**	to	examine	your	reordered	data	frames	and	be	prepared	to
+report	on	the	first	few	rows
+
+
+```{r}
+head(sortedDF)
+head(sortedDF1)
+```
+
+12. What	does	the	following	line	of	code	do?<br>
+`myIris [	,	1]`
+
+```{r}
+
+myIris [	,	1]
+#shows the first colunms
+```
+
+13. What	is	the	difference	(if	any)	between:<br>
+`myIris [	,	"Sepal.Length"]` and <br> 
+`myIris $Sepal.Length`
+
+```{r}
+myIris [	,	"Sepal.Length"]
+myIris $Sepal.Length
+
+#they are same
+```
+
+14. Write	the	R	code	that	outputs	the	** Sepal.Length **	attribute	values,	using	the **select()**	command.
+
+```{r}
+select(myIris,Sepal.Length)
+```
+
+15. Create	a	new	column	(called	** Ave.Length **)	in	**myIris**,	which,	for	each	row,	is	the average	of	**Sepal.Length**	and	**Petal.Length**.
+
+```{r}
+myIris$Ave.Length<-c((myIris$Sepal.Length+myIris$Petal.Length)/2)
+myIris
+
+
+```
+
+16. What	does	the	following	line	of	code	do:<br>
+`which.min(myIris$Petal.Length)`
+
+```{r}
+
+which.min(myIris$Petal.Length)
+#tell the user which position in the data set is the min value.
+```
+
+17. Using	the	code	from	the	previous	step,	output	the	row	(iris	observation)	with	the
+smallest	petal	length.
+
+```{r}
+min<-which.min(myIris$Petal.Length)
+myIris$Petal.Length[min]
+```
+
+18. Create	a	new	dataframe,	with	just	the	**Petal.Length**	and	**Petal.Width** attributes
+
+```{r}
+new_frame<-data.frame(select(myIris,Petal.Length),select(myIris,Petal.Width))
+new_frame
+```
+
+19. Create	a	new	dataframe,	using	the	**slice()**	function,	with	only	the	first	three	rows
+in	the	**myIris**	dataframe.
+
+```{r}
+new_frame2<-slice(myIris,1:5)
+new_frame2
+
+```
+
+20. Create a	new	dataframe,	which	is	a	subset	of	**myIris**,	that	only	includes	rows
+where **Petal.Length is	less	than	1.4**,	store	in	**shortPetalDF**
+
+```{r}
+shortPetalDF<-subset(myIris,myIris$Petal.Length<1.4)
+shortPetalDF
+```
+
+21. How	many	rows	are	in	the	**shortPetalDF**?
+
+```{r}
+length(shortPetalDF[,1])
+```
+
+22. The	homework	asks	you	to	create	a	conditional	statement	with	**if**	and	**else**.	A
+conditional	statement	is	part	of	a	larger	group	of	specialized	commands	that
+control	the	 flow 	of	a	program	 	what	command	gets	run	and	when.	You	can	get
+help	on	if,	else,	and	other	control	words.	Add	and	run	these	commands:<br>
+`help("if")` <br>
+`help("Control")`<br>
+Now	add	and	run	your	first	conditional	statement:<br>
+`if	(sum(myNumbers)	>	40)	print("The	sum	is	greater	than	40.")`
+
+```{r}
+myNumbers<-c(20,30,40)
+if	(sum(myNumbers)	>	40)	print("The sum is greater than 40.")
+```
+
+```{r}
+myNumbers<-c(2,3,4)
+if(sum(myNumbers)	>	40){
+  	print("The sum is greater than 40.")}else
+  	print("The sum is less than 40")
+```
+
+```{r}
+
+ans<-0
+for(i in 1:10){
+ 
+    ans<-ans+i
+    
+}
+ans
+
+```
+
+
+```{r}
+b<-100
+if(b>50){
+  print("test")
+}else
+  print("fail")
+```
+
+```{r}
+names <- c("Alex","Shu", "Tanya")
+
+ages <- c(28,17,35)
+
+users <- c("alp@syr.edu","sh67@syr.edu","tans@syr.edu")
+
+students <- data.frame(names,ages,users)
+students[2,3]
+
+
+```

@@ -1,0 +1,159 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+# Intro to Data Science - Lab 9
+##### Copyright 2022, Jeffrey Stanton and Jeffrey Saltz   Please do not post online.
+
+## Week 9 - Supervised	Data	Mining
+
+```{r}
+# Enter your name here: Hongdi Li
+```
+
+### Please include nice comments. <br>
+### Instructions: 
+Run the necessary code on your own instance of R-Studio.
+
+### Attribution statement: (choose only one and delete the rest)
+
+```{r}
+# 1. I did this lab assignment by myself, with help from the book and the professor.
+
+```
+
+**Supervised	data	mining/machine	learning**	is	the	most	prevalent	form	 of	data	mining	as	it	allows	for	the	prediction	of	new	cases	in	the	future.	For	example,	when	credit	card	companies	are	trying	to	detect	fraud,	they	will	create	a	supervised	model	by	training	it	on	fraud	data	that	they	already	have.	Then	they	will	deploy	the	
+model	into	the	field:	As	new	input	data	arrives the	model	predicts	whether	it	seems	fraudulent	and	flags	those	transactions	where	that	probability	is	high.	<br><br>
+
+In	these	exercises	we	will	work	with	a	built-in	data	set	called	**GermanCredit**.	This	data	set	is	in	the	** caret **	package	so	we	will	need	that	and	the	** kernlab **	package	to	be	installed	and	 libraried 	before	running	the	following:<br><br>	
+
+```
+data("GermanCredit")
+subCredit <- GermanCredit[,1:10]
+str(subCredit)
+
+```
+
+
+```{r}
+library(caret)
+data("GermanCredit")
+subCredit <- GermanCredit[,1:10]
+str(subCredit)
+```
+
+1. Examine the data structure that **str()** reveals. Also use the **help()** command to
+learn more about the **GermanCredit** data set. Summarize what you see in a
+comment.
+
+```{r}
+help(GermanCredit)
+```
+
+2. Use the **createDataPartition()** function to generate a list of cases to include in
+the training data. This function is conveniently provided by caret and allows one
+to directly control the number of training cases. It also ensures that the training
+cases are balanced with respect to the outcome variable. Try this:<br><br> `trainList <- createDataPartition(y=subCredit$Class,p=.40,list=FALSE)`
+
+```{r}
+trainList <- createDataPartition(y=subCredit$Class,p=.40,list=FALSE)
+```
+
+3. Examine the contents of **trainList** to make sure that it is a list of case numbers. With **p=0.40**, it should have 400 case numbers in it.
+
+```{r}
+dim(trainList)
+
+```
+
+4. What is **trainList**? What do the elements in **trainList** represent? Which attribute is balanced in the **trainList** dataset?
+
+```{r}
+#randomly selecting 40 percent of the indices from subCredit and using them to subset from it to create a train set,
+```
+
+5. Use **trainList** and the square brackets notation to create a training data set called ** trainSet ** from the **subCredit** data frame. Look at the structure of trainSet to
+make sure it has all of the same variables as **subCredit**. The **trainSet** structure
+should be a data frame with **400 rows and 10 columns**.
+
+```{r}
+trainSet <- subCredit[trainList,]
+dim(trainSet)
+```
+
+6. Use **trainList** and the square brackets notation to create a testing data set called ** testSet ** from the subCredit data frame. The **testSet** structure should be a data
+frame with **600 rows and 10 columns** and should be a completely different set of cases than **trainSet**.
+
+```{r}
+testSet <- subCredit[-trainList,]
+dim(testSet)
+```
+
+7. Create	and	interpret	boxplots	of	all the	predictor	variables in	relation	to	the outcome	variable	(**Class**).
+
+```{r}
+boxplot(testSet)
+```
+
+8. Train	a	support	vector	machine	with	the	**ksvm()**	function	from	the **kernlab** package.	Make	sure	that	you	have	installed	and	libraried	the **kernlab** package.
+Have	the	**cost** be	5,	and	have	**ksvm**	do	3	**cross	validations**	(Hint:	`try	prob.model	= TRUE`)
+
+```{r}
+library(kernlab)
+ans<-ksvm(Class ~ ., data=trainSet, kernel= "rbfdot", kpar = "automatic", C = 5, cross = 3, prob.model = TRUE)
+ans
+```
+
+9. Examine	the	ksvm output	object.	In	particular,	look	at	the **cross-validation	error** for	an	initial	indication	of	model	quality.	Add	a	comment	that	gives	your	opinion on	whether	this	is	a	good	model.
+
+```{r}
+# Cross validation error : 0.320091, cross validation error value is good to be less. 
+#Thus, I think 0.32 which is small enough. This is a good model
+```
+
+10. Predict	the	training	cases	using	the	**predict()**	command
+
+```{r}
+out<-predict(ans,
+                   testSet, 
+                   type = 
+)
+
+```
+
+11. Examine	the	predicted	out	object	with	**str(	)**.	Then,	calculate	a **confusion	matrix** using	the	**table()**	function.
+
+```{r}
+str(out)
+table(testSet$Class,out)
+```
+
+12. Interpret	the	confusion	matrix	and	in	particular	calculate	the	overall **accuracy**	of the	model.	The	**diag(	)**	command	can	be	applied	to	the	results	of	the	table
+command	you	ran	in	the	previous	step.	You	can	also	use	**sum(	)**	to	get	the	total	of
+all	four	cells.
+
+```{r}
+diag(table(testSet$Class,out))
+sum(table(testSet$Class,out))
+recall<-43/(43+36)
+Precision<-43/(43+137)
+recall
+Precision
+# our model doing 600 test and get 384 good and 43 bad. we have 173 give the wrong output, 
+# which 36 predict good but bad, and 137 predict bad but good.
+#recall is 0.58
+#precision is 0.19
+
+```
+
+13. Check	you	calculation	with the	**confusionMatrix()**	function	in	the	**caret**	package.
+
+```{r}
+
+library(e1071)
+confusionMatrix(testSet$Class, out)
+```
+
